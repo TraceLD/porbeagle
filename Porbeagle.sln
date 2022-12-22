@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Porbeagle", "Porbeagle\Porbeagle.csproj", "{96DB7EB0-C7BE-435A-8C94-CB58291C6CED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Porbeagle.Tests", "Porbeagle.Tests\Porbeagle.Tests.csproj", "{F95D8B9B-4547-430F-B953-A80206B37F82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Porbeagle.SourceGenerators", "Porbeagle.SourceGenerators\Porbeagle.SourceGenerators.csproj", "{86747D86-1207-4F3A-A42C-EB08FA58AEAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96DB7EB0-C7BE-435A-8C94-CB58291C6CED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96DB7EB0-C7BE-435A-8C94-CB58291C6CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96DB7EB0-C7BE-435A-8C94-CB58291C6CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96DB7EB0-C7BE-435A-8C94-CB58291C6CED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F95D8B9B-4547-430F-B953-A80206B37F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F95D8B9B-4547-430F-B953-A80206B37F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F95D8B9B-4547-430F-B953-A80206B37F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F95D8B9B-4547-430F-B953-A80206B37F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86747D86-1207-4F3A-A42C-EB08FA58AEAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86747D86-1207-4F3A-A42C-EB08FA58AEAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86747D86-1207-4F3A-A42C-EB08FA58AEAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86747D86-1207-4F3A-A42C-EB08FA58AEAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
