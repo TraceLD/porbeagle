@@ -19,9 +19,9 @@ public class MessageStyleViewManager : IContextAwareViewManager
         _channelAPI = channelApi;
     }
 
-    public async Task<Result<IMessage>> SendView(
+    public async Task<Result<IMessage>> SendView<TView, TViewModel>(
         Snowflake channelID,
-        IMessageView view,
+        TViewModel vm,
         Optional<string> nonce = default,
         Optional<bool> isTTS = default,
         Optional<IAllowedMentions> allowedMentions = default,
@@ -29,24 +29,28 @@ public class MessageStyleViewManager : IContextAwareViewManager
         Optional<IReadOnlyList<OneOf<FileData, IPartialAttachment>>> attachments = default,
         Optional<MessageFlags> flags = default,
         CancellationToken ct = default
-    ) => await _channelAPI.CreateMessageAsync(
-        channelID,
-        view.Text,
-        nonce,
-        isTTS,
-        view.Embeds,
-        allowedMentions,
-        messageReference,
-        view.Components,
-        view.Stickers,
-        attachments,
-        flags,
-        ct
-    );
+    ) where TView : IMessageView<TView, TViewModel>
+    {
+        var view = TView.Create(vm);
+        
+        return await _channelAPI.CreateMessageAsync(
+            channelID,
+            view.Text,
+            nonce,
+            isTTS,
+            view.Embeds,
+            allowedMentions,
+            messageReference,
+            view.Components,
+            view.Stickers,
+            attachments,
+            flags,
+            ct
+        );
+    }
 
-    public async Task<Result<IMessage>> SendView
-    (
-        IMessageView view,
+    public async Task<Result<IMessage>> SendView<TView, TViewModel>(
+        TViewModel vm,
         Optional<string> nonce = default,
         Optional<bool> isTTS = default,
         Optional<IAllowedMentions> allowedMentions = default,
@@ -54,42 +58,50 @@ public class MessageStyleViewManager : IContextAwareViewManager
         Optional<IReadOnlyList<OneOf<FileData, IPartialAttachment>>> attachments = default,
         Optional<MessageFlags> flags = default,
         CancellationToken ct = default
-    ) => await _channelAPI.CreateMessageAsync(
-        _context.ChannelID,
-        view.Text,
-        nonce,
-        isTTS,
-        view.Embeds,
-        allowedMentions,
-        messageReference,
-        view.Components,
-        view.Stickers,
-        attachments,
-        flags,
-        ct
-    );
+    ) where TView : IMessageView<TView, TViewModel>
+    {
+        var view = TView.Create(vm);
+        
+        return await _channelAPI.CreateMessageAsync(
+            _context.ChannelID,
+            view.Text,
+            nonce,
+            isTTS,
+            view.Embeds,
+            allowedMentions,
+            messageReference,
+            view.Components,
+            view.Stickers,
+            attachments,
+            flags,
+            ct
+        );
+    }
 
-    public async Task<Result<IMessage>> RespondWithView
-    (
-        IMessageView view,
+    public async Task<Result<IMessage>> RespondWithView<TView, TViewModel>(
+        TViewModel vm,
         Optional<string> nonce = default,
         Optional<bool> isTTS = default,
         Optional<IAllowedMentions> allowedMentions = default,
         Optional<IReadOnlyList<OneOf<FileData, IPartialAttachment>>> attachments = default,
         Optional<MessageFlags> flags = default,
         CancellationToken ct = default
-    ) => await _channelAPI.CreateMessageAsync(
-        _context.ChannelID,
-        view.Text,
-        nonce,
-        isTTS,
-        view.Embeds,
-        allowedMentions,
-        new MessageReference(_context.MessageID),
-        view.Components,
-        view.Stickers,
-        attachments,
-        flags,
-        ct
-    );
+    ) where TView : IMessageView<TView, TViewModel>
+    {
+        var view = TView.Create(vm);
+        return await _channelAPI.CreateMessageAsync(
+            _context.ChannelID,
+            view.Text,
+            nonce,
+            isTTS,
+            view.Embeds,
+            allowedMentions,
+            new MessageReference(_context.MessageID),
+            view.Components,
+            view.Stickers,
+            attachments,
+            flags,
+            ct
+        );
+    }
 }

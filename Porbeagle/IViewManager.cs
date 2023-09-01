@@ -26,9 +26,9 @@ public interface IViewManager
     /// <param name="flags">The message flags.</param>
     /// <param name="ct">The cancellation token for this operation.</param>
     /// <returns>A creation result which may or may not have succeeded.</returns>
-    Task<Result<IMessage>> SendView(
+    Task<Result<IMessage>> SendView<TView, TViewModel>(
         Snowflake channelID,
-        IMessageView view,
+        TViewModel vm,
         Optional<string> nonce = default,
         Optional<bool> isTTS = default,
         Optional<IAllowedMentions> allowedMentions = default,
@@ -36,5 +36,5 @@ public interface IViewManager
         Optional<IReadOnlyList<OneOf<FileData, IPartialAttachment>>> attachments = default,
         Optional<MessageFlags> flags = default,
         CancellationToken ct = default
-    );
+    ) where TView : IMessageView<TView, TViewModel>;
 }

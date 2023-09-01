@@ -21,7 +21,7 @@ public class MessageViewGenerator : ISourceGenerator
 
         foreach (var v in receiver.MessageViews)
         {
-            var generator = new MessageViewPartialFileGenerator(v, context);
+            var generator = new MessageViewPartialFileGenerator(v, context, receiver.MessageViewInterfaceSymbol!);
             var (fileName, fileContent) = generator.GenerateFile();
             
             context.AddSource(fileName, fileContent);
@@ -31,8 +31,7 @@ public class MessageViewGenerator : ISourceGenerator
     // ReSharper disable once ClassNeverInstantiated.Local
     private class SyntaxReceiver : ISyntaxContextReceiver
     {
-        private INamedTypeSymbol? _messageViewInterfaceSymbol;
-
+        public INamedTypeSymbol? MessageViewInterfaceSymbol { get; private set; }
         public List<RecordDeclarationSyntax> MessageViews { get; }
 
         public SyntaxReceiver()
@@ -40,13 +39,15 @@ public class MessageViewGenerator : ISourceGenerator
 
         public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            _messageViewInterfaceSymbol ??=
-                context.SemanticModel.Compilation.GetTypeByMetadataName("Porbeagle.IMessageView");
+            MessageViewInterfaceSymbol ??=
+                context.SemanticModel.Compilation.GetTypeByMetadataName("Porbeagle.IMessageView`2");
+            
+            if (context.Node is not RecordDeclarationSyntax { BaseList: { } }) return;
 
             if (context.Node is RecordDeclarationSyntax { BaseList: { } baseList } rds
                 && baseList
                     .Types
-                    .Any(t => t.IsModuleClass(context.SemanticModel, _messageViewInterfaceSymbol!))
+                    .Any(t => t.IsOriginalDefModuleClass(context.SemanticModel, MessageViewInterfaceSymbol!))
                 && HasDiscordViewAttribute(rds)
             )
             {
@@ -64,11 +65,13 @@ public class MessageViewGenerator : ISourceGenerator
     {
         private readonly RecordDeclarationSyntax _messageView;
         private readonly GeneratorExecutionContext _context;
+        private readonly INamedTypeSymbol _messageViewInterfaceSymbol;
 
-        internal MessageViewPartialFileGenerator(RecordDeclarationSyntax messageView, GeneratorExecutionContext context)
+        internal MessageViewPartialFileGenerator(RecordDeclarationSyntax messageView, GeneratorExecutionContext context, INamedTypeSymbol messageViewInterfaceSymbol)
         {
             _messageView = messageView;
             _context = context;
+            _messageViewInterfaceSymbol = messageViewInterfaceSymbol;
         }
 
         internal (string FileName, string FileContent) GenerateFile()
@@ -86,6 +89,10 @@ public class MessageViewGenerator : ISourceGenerator
             var messageViewSymbol = (INamedTypeSymbol)_context.Compilation
                 .GetSemanticModel(_messageView.SyntaxTree)
                 .GetDeclaredSymbol(_messageView)!;
+            var vmSymbol = messageViewSymbol
+                .Interfaces
+                .FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.OriginalDefinition, _messageViewInterfaceSymbol))!
+                .TypeArguments[1];
             var viewProperties = messageViewSymbol
                 .GetMembers()
                 .OfType<IPropertySymbol>()
@@ -147,7 +154,11 @@ public class MessageViewGenerator : ISourceGenerator
                     
                 // Generated action rows;
                 public global::Remora.Rest.Core.Optional<global::System.Collections.Generic.IReadOnlyList<global::Remora.Discord.API.Abstractions.Objects.IMessageComponent>> Components 
-                    => {{GenerateActionRowsProp(components)}};    
+                    => {{GenerateActionRowsProp(components)}};   
+                
+                // Generated Create;
+                public static {{messageViewSymbol.Name}} Create({{vmSymbol.Name}} vm)
+                    => new(vm); 
             }
             """;
             

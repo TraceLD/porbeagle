@@ -3,7 +3,7 @@ using Remora.Rest.Core;
 
 namespace Porbeagle;
 
-public interface IMessageView
+public interface IMessageView<out TSelf, in TViewModel>
 {
     Optional<string> Text { get; init; }
     
@@ -11,4 +11,6 @@ public interface IMessageView
     public Optional<IReadOnlyList<IEmbed>> Embeds { get; }
     public Optional<IReadOnlyList<IMessageComponent>> Components { get; }
     public Optional<IReadOnlyList<Snowflake>> Stickers { get; }
+
+    static abstract TSelf Create(TViewModel vm);
 }

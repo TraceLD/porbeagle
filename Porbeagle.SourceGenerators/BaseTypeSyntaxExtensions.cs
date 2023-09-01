@@ -15,4 +15,15 @@ internal static class BaseTypeSyntaxExtensions
 
         return SymbolEqualityComparer.Default.Equals(typeInfo.Type, moduleType);
     }
+    
+    internal static bool IsOriginalDefModuleClass(
+        this BaseTypeSyntax baseType,
+        SemanticModel model,
+        INamedTypeSymbol moduleType
+    )
+    {
+        var typeInfo = model.GetTypeInfo(baseType.Type);
+
+        return SymbolEqualityComparer.Default.Equals(typeInfo.Type!.OriginalDefinition, moduleType);
+    }
 }
