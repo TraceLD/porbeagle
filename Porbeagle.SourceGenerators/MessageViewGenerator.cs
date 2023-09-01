@@ -157,7 +157,7 @@ public class MessageViewGenerator : ISourceGenerator
                     => {{GenerateActionRowsProp(components)}};   
                 
                 // Generated Create;
-                public static {{messageViewSymbol.Name}} Create({{vmSymbol.Name}} vm)
+                public static {{messageViewSymbol.ToDisplayString()}} Create({{vmSymbol.ToDisplayString()}} vm)
                     => new(vm); 
             }
             """;

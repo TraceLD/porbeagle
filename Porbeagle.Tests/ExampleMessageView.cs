@@ -8,7 +8,7 @@ namespace Porbeagle.Tests;
 public sealed record ExampleViewModel(string Description);
 
 [DiscordView]
-public partial record ExampleMessageView : IMessageView<ExampleMessageView, ExampleViewModel>
+public partial record ExampleMessageView : IMessageView<ExampleMessageView, IEnumerable<ExampleViewModel>>
 {
     public Optional<string> Text { get; init; } = "Some text";
 
@@ -28,5 +28,5 @@ public partial record ExampleMessageView : IMessageView<ExampleMessageView, Exam
     public ButtonComponent ButtonComponent3 { get; } = new(ButtonComponentStyle.Success);
 
     private ExampleMessageView(ExampleViewModel vm) 
-        => SomeEmbed2 = new(vm.Description);
+        => SomeEmbed2 = new();
 }
